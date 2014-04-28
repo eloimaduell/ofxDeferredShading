@@ -174,13 +174,13 @@ void ofxDeferredShading::bindGBufferTextures() {
     glActiveTexture(GL_TEXTURE0 + m_textureUnits[TEX_UNIT_POINTLIGHT_PASS]);
     glBindTexture(GL_TEXTURE_2D, m_gBuffer.getTexture(GBuffer::GBUFFER_TEXTURE_TYPE_LIGHT_PASS));
     
-    cout <<"shaderBegin_A_" <<endl;
+    cout <<"shaderBegin_A1_" <<endl;
     m_shader.begin();  // our final deferred scene shader
     m_shader.setUniform1i("u_albedoTex", m_textureUnits[TEX_UNIT_ALBEDO]);
     if(activeAO) m_shader.setUniform1i("u_ssaoTex", m_textureUnits[TEX_UNIT_SSAO]);
     m_shader.setUniform1i("u_pointLightPassTex", m_textureUnits[TEX_UNIT_POINTLIGHT_PASS]);
     m_shader.end();
-    cout <<"shaderBegin_A_" <<endl;
+    cout <<"shaderBegin_A2_" <<endl;
     
     m_pointLightPassShader.begin();  // our point light pass shader
     m_pointLightPassShader.setUniform1i("u_albedoTex", m_textureUnits[TEX_UNIT_ALBEDO]);
@@ -257,12 +257,11 @@ void ofxDeferredShading::pointLightPass() {
     m_gBuffer.resetLightPass();
     
     cout <<"shaderBegin_B_" <<endl;
-    
+    if(m_pointLightPassShader.isLoaded()) cout << "a mi em diu que si" <<endl;
+    else cout << "a mi em diu que no" << endl;
     
     //**
-    
-    
-    
+
     //**
     
     
@@ -275,6 +274,9 @@ void ofxDeferredShading::pointLightPass() {
     m_pointLightPassShader.end();
     
     cam->begin();
+    
+    cout <<"shaderBegin_B2_" <<endl;
+
     
     ofMatrix4x4 camModelViewMatrix = cam->getModelViewMatrix(); // need to multiply light positions by camera's modelview matrix to transform them from world space to view space (reason for this is our normals and positions in the GBuffer are in view space so we must do our lighting calculations in the same space). It's faster to do it here on CPU vs. in shader
     
@@ -329,6 +331,9 @@ void ofxDeferredShading::pointLightPass() {
     
     m_gBuffer.unbind();
     cam->end();
+    
+    cout <<"shaderBegin_B3_" <<endl;
+
 }
 
 void ofxDeferredShading::deferredRender() {
@@ -337,6 +342,7 @@ void ofxDeferredShading::deferredRender() {
     glDisable(GL_DEPTH_TEST);
     ofDisableLighting();
     
+    cout << "shadeBegin C1" <<endl;
     m_shader.begin();
     drawScreenQuad();
     m_shader.end();
@@ -346,6 +352,7 @@ void ofxDeferredShading::deferredRender() {
 
 //--------------------------------------------------------------
 void ofxDeferredShading::update() {
+ /*
     m_angle += 1.0f;
     
     int count = 0;
@@ -363,6 +370,8 @@ void ofxDeferredShading::update() {
         
         ++count;
     }
+  
+  */
 }
 
 //--------------------------------------------------------------
